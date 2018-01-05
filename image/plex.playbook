@@ -1,0 +1,29 @@
+---
+- hosts: all
+  tasks:
+    - get_url:
+        url:      "https://downloads.plex.tv/plex-media-server/{{ ansible_env.PLEX_VERSION }}/plexmediaserver-{{ ansible_env.PLEX_VERSION }}.x86_64.rpm"
+        dest:     "/usr/local/src/plexmediaserver-{{ ansible_env.PLEX_VERSION }}.x86_64.rpm"
+        checksum: "sha256:{{ ansible_env.PLEX_SHA256 }}"
+    - yum:
+        name:  "{{ item }}"
+        state: "present"
+      with_items:
+        - "/usr/local/src/plexmediaserver-{{ ansible_env.PLEX_VERSION }}.x86_64.rpm"
+    - user:
+        name:  "plex"
+        state: "absent"
+    - group:
+        name:  "plex"
+        state: "absent"
+    - file:
+        name: "{{ item }}"
+        state: "absent"
+      with_items:
+        - "/etc/init.d/plexmediaserver"
+        - "/etc/security/limits.d/plex.conf"
+        - "/etc/sysconfig/PlexMediaServer"
+        - "/etc/yum.repos.d/plex.repo"
+        - "/etc/zypp/repos.d/plex.repo"
+        - "/lib/systemd/system/plexmediaserver.service"
+        - "/lib/udev/rules.d/60-tvbutler-perms.rules"

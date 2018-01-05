@@ -1,0 +1,33 @@
+#!/usr/bin/env sh
+
+# Set name of Plex user
+PLEX_USER="{{ ansible_env.USER | default('docker') }}"
+export PLEX_USER="${PLEX_USER}"
+
+# Set home of Plex Media Server
+PLEX_MEDIA_SERVER_HOME="/usr/lib/plexmediaserver"
+export PLEX_MEDIA_SERVER_HOME="${PLEX_MEDIA_SERVER_HOME}"
+LD_LIBRARY_PATH="/usr/lib/plexmediaserver"
+export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}"
+
+# Set home for Plex metadata
+PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR="{{ ansible_env.USERHOME | default('/var/lib/' + (ansible_env.USER | default('docker')) + '/.config/plex') }}"
+export PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR="${PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR}"
+
+# Set language
+LANG="en_US.UTF-8"
+export LANG="${LANG}"
+LC_ALL="en_US.UTF-8"
+export LC_ALL="${LC_ALL}"
+
+# Set transcode directory
+TMPDIR="{{ ansible_env.PLEX_TRANSCODE | default('/var/lib/' + (ansible_env.USER | default('docker')) + '/.config/transcode') }}"
+export TMPDIR="${TMPDIR}"
+PLEX_MEDIA_SERVER_TMPDIR="{{ ansible_env.PLEX_TRANSCODE | default('/var/lib/' + (ansible_env.USER | default('docker')) + '/.config/transcode') }}"
+export PLEX_MEDIA_SERVER_TMPDIR="${PLEX_MEDIA_SERVER_TMPDIR}"
+
+# Max number of plugin processes
+PLEX_MEDIA_SERVER_MAX_PLUGIN_PROCS="6"
+export PLEX_MEDIA_SERVER_MAX_PLUGIN_PROCS="${PLEX_MEDIA_SERVER_MAX_PLUGIN_PROCS}"
+
+"${PLEX_MEDIA_SERVER_HOME}/Plex Media Server"
