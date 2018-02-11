@@ -17,13 +17,17 @@
         mode:  "{{ item.mode | default('0755') }}"
       with_items:
         - name: "{{ ansible_env.PLEX_TRANSCODE | default('/var/lib/' + (ansible_env.USER | default('docker')) + '/.config/transcode') }}"
-        - name: "{{ ansible_env.PLEX_TRANSCODE | default('/var/lib/' + (ansible_env.USER | default('docker')) + '/.config/plex') }}"
+        - name: "{{ ansible_env.PLEX_CONFIG | default('/var/lib/' + (ansible_env.USER | default('docker')) + '/.config/plex') }}"
     - name: "Set timezone to {{ ansible_env.PLEX_TIMEZONE }}"
       file:
         state: "link"
         dest:  "/etc/localtime"
         src:   "/usr/share/zoneinfo/{{ ansible_env.PLEX_TIMEZONE }}"
         force: "yes"
+    - name: "Remove plexmediaserver.pid file"
+      file:
+        name:   "{{ ansible_env.PLEX_CONFIG | default('/var/lib/' + (ansible_env.USER | default('docker')) + '/.config/plex/Plex Media Server/plexmediaserver.pid') }}"
+        state: "absent"
     - template:
         src: "{{ item.name }}.j2"
         dest: "{{ item.path }}/{{ item.name }}"
